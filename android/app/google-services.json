@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "890953471063",
+    "firebase_url": "https://avo-projects-default-rtdb.firebaseio.com",
+    "project_id": "avo-projects",
+    "storage_bucket": "avo-projects.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890953471063:android:d4321f2ae91af0c7bb3f12",
+        "android_client_info": {
+          "package_name": "com.avoprojects.dummygram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890953471063-0vuuglruf6jtpa2u6385tb602s9a1pdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAphwiV9W1IoPUsVWZ-zcwX2bRBb4ENkj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890953471063-0vuuglruf6jtpa2u6385tb602s9a1pdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890953471063:android:1a12a728c8d63626bb3f12",
+        "android_client_info": {
+          "package_name": "com.avoprojects.todolist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890953471063-0vuuglruf6jtpa2u6385tb602s9a1pdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAphwiV9W1IoPUsVWZ-zcwX2bRBb4ENkj0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890953471063-0vuuglruf6jtpa2u6385tb602s9a1pdv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
