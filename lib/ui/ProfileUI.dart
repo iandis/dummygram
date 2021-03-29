@@ -5,7 +5,7 @@ import 'package:dummygram/models/User.dart';
 import '../GlobalSettings.dart';
 
 class ProfileUI extends StatefulWidget{
-  final UserInf user = GlobalSettings.instance().userInfo;
+  //final UserInf user = UserInf(GlobalSettings.me.userInfo);
   @override
   _ProfileUI createState()=>_ProfileUI();
 }
@@ -65,7 +65,7 @@ class _ProfileUI extends State<ProfileUI>{
                         alignment: Alignment.topCenter,
                         child: CircleAvatar(
                           radius:70,
-                          backgroundColor: widget.user.gender == 0 ? Colors.cyanAccent : Colors.pink[200],
+                          backgroundColor: Colors.cyanAccent,
                           child: CircleAvatar(
                             radius: 69,
                             backgroundColor: Theme.of(context).primaryColor,
@@ -81,7 +81,7 @@ class _ProfileUI extends State<ProfileUI>{
                   Container(
                     margin: EdgeInsets.only(top: 12.0),
                     child: Text(
-                      widget.user.name,
+                      GlobalSettings.me.userInfo.name,
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headline5,
                     ),
@@ -89,7 +89,7 @@ class _ProfileUI extends State<ProfileUI>{
                   Container(
                     padding: EdgeInsets.only(left:20, right:20,top:30.0, bottom: 30),
                     child: Text(
-                      widget.user.bio,
+                      GlobalSettings.me.userInfo.bio,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 15,
@@ -134,7 +134,7 @@ class _ProfileUI extends State<ProfileUI>{
                               child:Column(
                                 children: [
                                   Text(
-                                    widget.user.flwr.toString(),
+                                    GlobalSettings.me.userInfo.flwr.toString(),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(
@@ -156,7 +156,7 @@ class _ProfileUI extends State<ProfileUI>{
                               child:Column(
                                 children: [
                                   Text(
-                                    widget.user.flwg.toString(),
+                                    GlobalSettings.me.userInfo.flwg.toString(),
                                     textAlign: TextAlign.center,
                                   ),
                                   Text(

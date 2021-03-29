@@ -1,12 +1,8 @@
-import 'bloc/Auth/Auth.dart';
+import 'Singleton.dart';
 import 'GlobalSettings.dart';
-
-import 'package:dummygram/bloc/UINavigator/Navigate.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-
 
 class SplashUI extends StatefulWidget{
   @override
@@ -15,13 +11,17 @@ class SplashUI extends StatefulWidget{
 
 class _SplashUI extends State<SplashUI>{
   @override
-  void initState() async {
-    await Auth.instance().init();
-    if(!GlobalSettings.instance().authenticated()){
-      await Navigate.instance().push(context, UI.LOGIN, popAllPage: true);
-    }else{
-      await Navigate.instance().push(context, UI.PROFILE, popAllPage: true);
+  void initState() {
+    init() async {
+      await My.auth.init();
+      await Future.delayed(Duration(milliseconds: 2500));
+      if (!GlobalSettings.me.authenticated) {
+        await My.navigate.push(context, "login", popAllPage: true);
+      } else {
+        await My.navigate.push(context, "profile", popAllPage: true);
+      }
     }
+    init();
     super.initState();
   }
 
@@ -31,10 +31,15 @@ class _SplashUI extends State<SplashUI>{
       backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-            "Dummygram",
-            style: Theme.of(context).textTheme.headline1,
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+              "Dummygram",
+              style: Theme.of(context).textTheme.headline1,
+              ),
             ),
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation(Theme.of(context).accentColor),

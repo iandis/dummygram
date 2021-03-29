@@ -5,7 +5,7 @@ class IAuth{
   Future<void> init() async {}
   void getCurrentUser(){}
   void setCurrentUser(UserInf userInf){}
-  Future<bool> loginUser(String email, String password) async{}
-  Future<bool> regUser(UserInf userInf, String password) async{}
+  Future<List> loginUser(String email, String password) async{}
+  Future<String> regUser(UserInf userInf, String password) async{}
   void signOut(){}
 }

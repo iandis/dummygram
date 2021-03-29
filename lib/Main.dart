@@ -31,9 +31,8 @@ class MyApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            onPrimary: Color(0xff40C4FF),
-            primary: Color(0xff40C4FF).withOpacity(0.5),
-            textStyle: TextStyle(color: Colors.white),
+            onPrimary: Colors.white,
+            primary: Color(0xff40C4FF),
           )
         ),
         textTheme: TextTheme(

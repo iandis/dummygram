@@ -1,23 +1,21 @@
 import 'INavigate.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:dummygram/ui/_all.dart';
-enum UI{
-  SIGNUP,
-  LOGIN,
-  PROFILE,
-}
+
 class Navigate implements INavigate{
-  static Navigate instance() => new Navigate();
+  Navigate();
   @override
-  Future<void> push(context, ui, {bool popCurrentPage = false, bool popAllPage = false}) async {
+  Future<void> push(context, String ui, {bool popCurrentPage = false, bool popAllPage = false}) async {
+    context = context as BuildContext;
     Widget destUI() {
       switch (ui) {
-        case UI.SIGNUP:
-          return new SignupUI();
-        case UI.LOGIN:
-          return new LoginUI();
-        case UI.PROFILE:
-          return new ProfileUI();
+        case "signup":
+          return SignupUI();
+        case "login":
+          return LoginUI();
+        case "profile":
+          return ProfileUI();
         default:
           return null;
       }
