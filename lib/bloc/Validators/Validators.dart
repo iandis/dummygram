@@ -12,6 +12,11 @@ class Validators{
       return true;
     }
   }
+  bool isValidUsername(String value){
+    Pattern pattern = r'^[a-zA-Z0-9\_]+$';
+    RegExp regex = RegExp(pattern);
+    return regex.hasMatch(value);
+  }
   int isValidPassword(String input){
     if(input==null) return -1;
     if(input.length==0) return -1;
@@ -21,10 +26,10 @@ class Validators{
     return 1;
   }
   bool isNullOrWhitespace(String input) {
-    if(input==null) return false;
-    if(input.length==0) return false;
+    if(input==null) return true;
+    if(input.length==0) return true;
     String output = input.replaceAll(" ", "");
-    if(output == "") return false;
-    return true;
+    if(output == "") return true;
+    return false;
   }
 }

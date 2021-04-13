@@ -35,6 +35,14 @@ dependencies:
   # For example, to use Firebase Authentication and Cloud Firestore
   firebase_auth: ^1.0.1
   cloud_firestore: ^1.0.2
+  firebase_storage: ^8.0.1
+  image_picker: ^0.7.4
+  image_cropper: ^1.4.0
+  image: ^3.0.2
+  file_picker: ^3.0.0
+  path_provider: ^2.0.1
+  http: ^0.13.1
+  permission_handler: ^6.1.1
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +58,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - assets/images/
   fonts:
     - family: Lato
       fonts:

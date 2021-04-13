@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#191E3B</color>  <!-- indigo -->
+    <color name="colorAccent">#40C4FF</color> <!-- light blue -->
+    <color name="colorOnPrimaryLight">#FFFFFF</color> <!-- white -->
+    <color name="colorOnPrimaryDark">#111111</color>  <!-- black -->
+</resources>

@@ -1,106 +1,180 @@
-import 'package:dummygram/models/User.dart';
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+
 import 'IAuth.dart';
-import 'package:dummygram/GlobalSettings.dart';
+import '../../Singleton.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 class Auth implements IAuth{
-  Auth();
+
   @override
-  Future<void> init() async{
+  init() async{
     await Firebase.initializeApp();
-    GlobalSettings.me.currentUser = FirebaseAuth.instance.currentUser;
-    getCurrentUser();
   }
 
   @override
-  void getCurrentUser() async{
-    if(GlobalSettings.me.authenticated){
-      var uid = FirebaseAuth.instance.currentUser.uid;
+  Future<Uint8List> initUserAvatar() async{
+    var url = My.i.globalSettings.userInfo.imgurl128;
+    var avatarPath = "users/"+My.i.globalSettings.userInfo.id+"/128x128.jpg";
+    Uint8List avatar;
+    if(url != ""){
+      avatar = await My.i.cachedImage.loadImageUrl(url, avatarPath, 1);
+    }
+    return avatar;
+  }
+
+  @override
+  StreamSubscription listenToUserChange(FutureOr<dynamic> onSignOut) {
+    return FirebaseAuth.instance.userChanges().listen((event) => event ?? onSignOut);
+  }
+
+/*  void _setcurrentUser(User user, FutureOr onSignIn, FutureOr onSignOut) async{
+    if(user != null){
+      var uid = user.uid;
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .get()
+          .then((DocumentSnapshot result){
+              My.i.globalSettings.userInfo.id=uid;
+              My.i.globalSettings.userInfo.name = result["name"];
+              My.i.globalSettings.userInfo.bio = result["bio"];
+              My.i.globalSettings.userInfo.imgUrl = result["imgurl"];
+              My.i.globalSettings.userInfo.flwr = result["flwr"];
+              My.i.globalSettings.userInfo.flwg = result["flwg"];
+          })
+          .whenComplete(() => onSignIn);
+    }else{
+      My.i.globalSettings.userInfo.clear();
+      await onSignOut;
+    }
+  }*/
+  @override
+  Future<int> getCurrentUser() async{
+    var auth = FirebaseAuth.instance.currentUser;
+    int err;
+    if(auth != null){
+      var uid = auth.uid;
       await FirebaseFirestore.instance
                             .collection("users")
                             .doc(uid)
                             .get()
-                            .then((DocumentSnapshot result){
-                              GlobalSettings.me.userInfo.id=uid;
-                              GlobalSettings.me.userInfo.name = result["name"];
-                              GlobalSettings.me.userInfo.email = result["email"];
-                              GlobalSettings.me.userInfo.bio = result["bio"];
-                              GlobalSettings.me.userInfo.imgUrl = result["imgurl"];
-                              GlobalSettings.me.userInfo.flwr = result["flwr"];
-                              GlobalSettings.me.userInfo.flwg = result["flwg"];
-                              });
+                            .then((DocumentSnapshot result)async{
+                              My.i.globalSettings.userInfo.id=uid;
+                              My.i.globalSettings.userInfo.name = result["name"];
+                              My.i.globalSettings.userInfo.username = result["username"];
+                              My.i.globalSettings.userInfo.bio = result["bio"];
+                              My.i.globalSettings.userInfo.imgurl128 = result["imgurl128"];
+                              My.i.globalSettings.userInfo.imgurl64 = result["imgurl64"];
+                              My.i.globalSettings.userInfo.flwr = List.from(result["flwr"]);
+                              My.i.globalSettings.userInfo.flwg = List.from(result["flwg"]);
+                              var url = result["imgurl128"];
+                              var thumb = result["imgurl64"];
+                              var avatarPath1 = "users/"+uid+"/128x128.jpg";
+                              var avatarPath2 = "users/"+uid+"/64x64.jpg";
+                              Uint8List avatar1, avatar2;
+                              if(url != "")
+                                avatar1 = await My.i.cachedImage.loadImageUrl(url, avatarPath1, 0);
+
+                              if(thumb != "")
+                                avatar2 = await My.i.cachedImage.loadImageUrl(thumb, avatarPath2, 0);
+
+                              My.i.globalSettings.userInfo.avatar128 = avatar1;
+                              My.i.globalSettings.userInfo.avatar64 = avatar2;
+                              print("[Called From GetCurrentUser !");
+      })
+                            .then((value) => err = 1)
+                            .catchError((Object error) => err = -1);
     }else{
-      GlobalSettings.me.userInfo = UserInf();
+      err = 0;
+      My.i.globalSettings.userInfo.clear();
     }
+    return err;
   }
 
-  @override
+/*  @override
   void setCurrentUser(UserInf userInf) {
-    GlobalSettings.me.userInfo.id = userInf.id;
-    GlobalSettings.me.userInfo.name = userInf.name;
-    GlobalSettings.me.userInfo.email = userInf.email;
-    GlobalSettings.me.userInfo.bio = userInf.bio;
-    GlobalSettings.me.userInfo.imgUrl = userInf.imgUrl;
-    GlobalSettings.me.userInfo.flwr = userInf.flwr;
-    GlobalSettings.me.userInfo.flwg = userInf.flwg;
-  }
+    My.i.globalSettings.userInfo.id = userInf.id;
+    My.i.globalSettings.userInfo.name = userInf.name;
+    My.i.globalSettings.userInfo.bio = userInf.bio;
+    My.i.globalSettings.userInfo.imgUrl = userInf.imgUrl;
+    My.i.globalSettings.userInfo.flwr = userInf.flwr;
+    My.i.globalSettings.userInfo.flwg = userInf.flwg;
+  }*/
 
   @override
-  Future<List> loginUser(String email, String password) async {
-    UserInf userInf = UserInf();
+  Future<String> loginUser(String email, String password) async {
+    //UserInf userInf = UserInf();
     String res;
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email.toLowerCase(), password: password)
-        .then((logUser) async {
-                          userInf.id = logUser.user.uid;
-                          await FirebaseFirestore.instance
-                                          .collection("users")
-                                          .doc(userInf.id)
-                                          .get()
-                                          .then((DocumentSnapshot result){
-                                            userInf.name = result["name"];
-                                            userInf.email = result["email"];
-                                            userInf.bio = result["bio"];
-                                            userInf.imgUrl = result["imgurl"];
-                                            userInf.flwr = result["flwr"];
-                                            userInf.flwg = result["flwg"];
-                          });
-                        }
-        )
-        .whenComplete(() {setCurrentUser(userInf);})
-        .onError((error, stackTrace) {res = error.toString();});
-    return [res, userInf];
-  }
-
-  @override
-  Future<String> regUser(UserInf userInf, String password) async{
-    String res;
-    await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: userInf.email, password: password)
-        .then((regUser) async {
-          userInf.id = regUser.user.uid;
-            await FirebaseFirestore.instance
-              .collection("users")
-              .doc(userInf.id)
-              .set({
-            "name" : userInf.name,
-            "email": userInf.email,
-            "bio"  : userInf.bio,
-            "imgurl": userInf.imgUrl,
-            "flwr" : userInf.flwr,
-            "flwg" : userInf.flwg});
-          })
-              .whenComplete(() {setCurrentUser(userInf);})
-              .onError((error, stackTrace) {res=error.toString();});
+        .then((value) => res = null)
+        .catchError((Object error) {
+          if(error is FirebaseException)
+            res = error.message;
+          else
+            res = error.toString();
+        })
+        .whenComplete(() async => res ?? await getCurrentUser());
     return res;
   }
 
   @override
-  void signOut() async {
-    if(FirebaseAuth.instance.currentUser != null) {
-      await FirebaseAuth.instance.signOut();
-      GlobalSettings.me.userInfo = UserInf();
-    }
+  Future<String> regUser(String email, String password, String username, {String name = ""}) async{
+    String res;
+    String id, _name;
+    //FieldValue serverTime = FieldValue.serverTimestamp();
+    await FirebaseFirestore.instance
+        .collection("users")
+        .where("username", isEqualTo: username)        
+        .get()
+        .then((value) => value.size > 0 ? throw("Username already taken.") : null)
+        .then((_) async
+          {
+            await FirebaseAuth.instance
+                .createUserWithEmailAndPassword(email: email, password: password)
+                .then( (regUser) async
+                  {
+                    id = regUser.user.uid;
+                    _name = name == "" ? email.split('@')[0] : name;
+                    await FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(id)
+                        .set(
+                          {
+                            "name" : _name,
+                            "username" : username,
+                            "bio"  : "",
+                            "imgurl128": "",
+                            "imgurl64": "",
+                            "flwr" : [],
+                            "flwg" : [],
+                            "createdOn" : FieldValue.serverTimestamp(),
+                          }
+                        );
+                  }
+                );
+        })
+        .catchError((Object error) {
+          if(error is FirebaseException)
+            res = error.message;
+          else
+            res = error.toString();
+        })
+        .whenComplete(() async => res ?? await getCurrentUser());
+    return res;
   }
+
+/*  @override
+  Future<void> signOut() async {
+    if(FirebaseAuth.instance.currentUser != null) {
+      await FirebaseAuth.instance.signOut().then((value) => My.i.globalSettings.userInfo.clear());
+    }else{
+
+    }
+  }*/
 }

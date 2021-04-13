@@ -1,40 +1,54 @@
+import 'dart:typed_data';
+
+import 'package:dummygram/ui/ProfileUI.dart';
+
 import 'INavigate.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:dummygram/ui/_all.dart';
 
-class Navigate implements INavigate{
-  Navigate();
+class Navigate implements INavigate {
+
+  Map<String, Widget> pages = Map();
   @override
-  Future<void> push(context, String ui, {bool popCurrentPage = false, bool popAllPage = false}) async {
+  void register(String name, page){
+    pages[name] = page;
+  }
+  @override
+  Future<void> push(context, String ui, {bool popCurrentPage = false, bool popAllPage = false, arg}) async {
     context = context as BuildContext;
     Widget destUI() {
-      switch (ui) {
-        case "signup":
-          return SignupUI();
-        case "login":
-          return LoginUI();
-        case "profile":
-          return ProfileUI();
-        default:
-          return null;
+      try{
+        return pages[ui];
+      }catch(ex){
+        return null;
       }
     }
 
     if (popAllPage)
-      await Navigator.pushAndRemoveUntil(context, CupertinoPageRoute(builder: (context) {
-        return destUI();
-      }), (Route<dynamic> route) => false);
+      // SchedulerBinding.instance.addPostFrameCallback((_) async =>
+        await Navigator.pushAndRemoveUntil(
+            context,
+            CupertinoPageRoute(
+                builder: (context) => destUI() ),
+            (route) => false,
+        );
+      //);
     else if (popCurrentPage) {
-      await Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        return destUI();
-      }));
+      // SchedulerBinding.instance.addPostFrameCallback((_) async =>
+        await Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (context) => destUI() )
+        );
+      // );
       Navigator.pop(context);
     }
     else
-      Navigator.push(context, CupertinoPageRoute(builder: (context) {
-        return destUI();
-      }));
-
+      // SchedulerBinding.instance.addPostFrameCallback((_) async =>
+        await Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (context) => destUI() )
+        );
+      // );
   }
 }
